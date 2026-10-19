@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XXXECUTIVE — Adult Entertainment Wave Engine</title>
+<style>
+:root{
+  --bg:#08070a;--panel:rgba(255,255,255,.075);--panel2:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.14);--text:#fff7fb;--muted:#b5a5ae;
+  --accent:#ff4f9a;--hot:#ff174f;--ok:#9ef0c3;--danger:#ff6c85;
+  --shadow:0 22px 70px rgba(0,0,0,.38);--radius:24px
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(255,45,126,.20),transparent 27%),
+    radial-gradient(circle at 88% 15%,rgba(255,35,67,.13),transparent 23%),
+    radial-gradient(circle at 68% 88%,rgba(255,190,218,.07),transparent 28%),
+    linear-gradient(145deg,#070608,#10090d 55%,#08070a);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.25;
+  background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:34px 34px
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 16px 70px}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.045));border:1px solid var(--line);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:var(--shadow)}
+.hero{border-radius:30px;padding:26px;display:grid;grid-template-columns:1.4fr .9fr;gap:20px;align-items:center}
+.eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:900}
+h1{font-size:clamp(44px,8vw,88px);line-height:.87;letter-spacing:-.065em;margin:10px 0 12px}
+.subtitle{color:#c9c3d5;line-height:1.55;max-width:720px}
+.now{padding:20px;border-radius:22px;background:var(--panel2);border:1px solid var(--line)}
+.now .label{font-size:11px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;font-weight:900}
+.now h2{font-size:34px;margin:7px 0 6px;letter-spacing:-.04em}
+.now p{color:#c7bfd1;line-height:1.5;margin:0 0 14px}
+.progress{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:10px 0 7px}
+.progress>div{height:100%;background:linear-gradient(90deg,#fff,#ff8fc0,var(--hot));transition:.3s}
+.small{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.btn{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);padding:11px 14px;border-radius:14px;font-weight:800}
+.btn:hover{background:rgba(255,255,255,.11);transform:translateY(-1px)}
+.btn.primary{border:none;background:linear-gradient(135deg,#ff75b3,#ff315f);color:#260815}
+.btn.hot{border:none;background:linear-gradient(135deg,#ff174f,#ff8cc0);color:#2b0713}
+.btn.danger{color:#ffdce2;border-color:rgba(255,141,158,.3)}
+.sectionTitle{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 2px 12px}
+.sectionTitle h3{margin:0;font-size:14px;letter-spacing:.18em;text-transform:uppercase}
+.sectionTitle p{margin:0;color:var(--muted);font-size:12px}
+.waves{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.wave{position:relative;min-height:184px;padding:18px;border-radius:22px;overflow:hidden}
+.wave:after{content:"";position:absolute;inset:auto -35px -55px auto;width:120px;height:120px;border-radius:50%;background:var(--wave-color,#d7b8ff);filter:blur(35px);opacity:.18;pointer-events:none}
+.wave.active{outline:1px solid rgba(255,255,255,.35);box-shadow:0 0 0 1px rgba(255,255,255,.08),0 20px 60px rgba(0,0,0,.35)}
+.waveHead{display:flex;justify-content:space-between;align-items:start;gap:8px}
+.waveNum{font-size:11px;color:var(--muted);letter-spacing:.14em}
+.wave h4{font-size:23px;margin:10px 0 8px;letter-spacing:-.035em}
+.waveDesc{color:#bbb4c8;line-height:1.45;font-size:13px;min-height:58px}
+.waveMeta{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.pill{font-size:10px;padding:6px 8px;border-radius:999px;border:1px solid var(--line);color:#cec6d7;background:rgba(255,255,255,.04);font-weight:800;letter-spacing:.06em}
+.pill.active{color:#fff;background:rgba(255,255,255,.1)}
+.iconbtn{border:1px solid var(--line);background:rgba(255,255,255,.055);color:#eee;width:34px;height:34px;border-radius:11px;font-size:15px}
+.iconbtn:hover{background:rgba(255,255,255,.12)}
+.bank{padding:20px;border-radius:24px}
+.bankTop{display:grid;grid-template-columns:1fr auto auto;gap:10px;margin-bottom:12px}
+.input,.select,textarea{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.055);color:var(--text);padding:12px 13px;border-radius:13px;outline:none}
+.select option{color:#111}
+textarea{min-height:110px;resize:vertical}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 16px}
+.chip{border:1px solid var(--line);background:rgba(255,255,255,.04);color:#c9c3d3;padding:8px 11px;border-radius:999px;font-size:12px;font-weight:800}
+.chip.on{background:rgba(255,255,255,.12);color:white}
+.ideaList{display:grid;gap:9px}
+.idea{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:13px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08)}
+.check{width:22px;height:22px;border-radius:7px;border:1px solid var(--line);display:grid;place-items:center;color:#141018;background:rgba(255,255,255,.05)}
+.check.done{background:var(--ok);border:none}
+.idea.done .ideaText{text-decoration:line-through;opacity:.52}
+.ideaTitle{font-weight:800}
+.ideaSub{font-size:11px;color:var(--muted);margin-top:4px}
+.ideaActions{display:flex;gap:6px}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed rgba(255,255,255,.12);border-radius:16px}
+dialog{border:none;padding:0;background:transparent;color:var(--text);width:min(620px,calc(100% - 26px))}
+dialog::backdrop{background:rgba(0,0,0,.68);backdrop-filter:blur(7px)}
+.modal{padding:21px;border-radius:24px}
+.modalHead{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:16px}
+.modalHead h2{margin:4px 0 0;font-size:28px}
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.full{grid-column:1/-1}
+label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:900;color:var(--muted);margin:0 0 6px}
+.modalActions{display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap;margin-top:16px}
+.rightActions{display:flex;gap:9px;flex-wrap:wrap}
+.colorRow{display:grid;grid-template-columns:1fr auto;gap:10px}
+input[type=color]{width:52px;height:46px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.04);padding:5px}
+.drag{cursor:grab;color:#736d7c;font-size:18px}
+.footer{text-align:center;color:#777080;font-size:11px;padding:26px 8px}
+@media(max-width:980px){.waves{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}}
+@media(max-width:650px){.waves{grid-template-columns:1fr}.bankTop{grid-template-columns:1fr}.idea{grid-template-columns:auto 1fr}.ideaActions{grid-column:2}.formGrid{grid-template-columns:1fr}.full{grid-column:auto}h1{font-size:58px}.hero{padding:20px}}
+
+.updateDock{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px;padding:12px 16px;border:1px solid rgba(255,90,159,.28);border-radius:16px;background:rgba(25,10,22,.75)}
+.updateDock .updateLabel{font-size:12px;color:#e5c7d7;line-height:1.5}
+.updateDock .updateLabel strong{color:#fff;letter-spacing:.09em}
+.updateDock button{box-shadow:0 0 18px rgba(255,48,117,.25)}
+@media(max-width:650px){.updateDock{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="updateDock"><div class="updateLabel"><strong>✦ BABEWARE UPDATE CENTER</strong><div id="updateStatus" role="status" aria-live="polite">XXXECUTIVE v1.0.1 · Checks on startup and every six hours</div></div><button class="btn hot" id="updateButton" type="button">↻ UPDATE</button></div>
+  <section class="hero glass">
+    <div>
+      <div class="eyebrow">✦ XXXECUTIVE · ADULT ENTERTAINMENT WAVE ENGINE</div>
+      <h1><img src="babeware-assets/xxx-bunny.png" alt="XXXECUTIVE bunny" style="width:48px;height:48px;object-fit:contain;vertical-align:middle;margin-right:10px;image-rendering:auto">XXXECUTIVE</h1>
+      <div class="subtitle">Run every lane of your adult entertainment business without trying to perform every job at once. Pick the wave. Work the wave. Keep the empire moving.</div>
+    </div>
+    <div class="now">
+      <div class="label">CURRENT BUSINESS MODE</div>
+      <h2 id="currentWaveName">CAM WAVE</h2>
+      <p id="currentWaveDesc"></p>
+      <div class="progress"><div id="dayFill"></div></div>
+      <div class="small"><span id="dayText"></span> · <span id="dateText"></span></div>
+      <div class="toolbar" style="margin-bottom:0">
+        <button class="btn primary" id="completeWave">Complete wave →</button>
+        <button class="btn" id="tuneCurrent">Edit wave</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="sectionTitle">
+    <div><h3>THE ROSTER</h3><p>Every revenue lane gets its own turn in the spotlight.</p></div>
+    <button class="btn hot" id="addWave">＋ Add wave</button>
+  </div>
+
+  <section class="waves" id="waves"></section>
+
+  <div class="sectionTitle">
+    <div><h3>THE VAULT</h3><p>Park tasks, content moves, bookings, and business ideas where they belong.</p></div>
+  </div>
+
+  <section class="bank glass">
+    <div class="bankTop">
+      <input class="input" id="ideaText" placeholder="Capture the next move…">
+      <select class="select" id="ideaWave"></select>
+      <select class="select" id="ideaType">
+        <option>Live</option><option>Shoot</option><option>PPV</option><option>Post</option><option>Promo</option><option>Booking</option><option>Admin</option><option>Safety</option><option>Recovery</option>
+      </select>
+    </div>
+    <button class="btn primary" id="addIdea">Add to vault</button>
+    <div class="filters" id="filters"></div>
+    <div class="ideaList" id="ideaList"></div>
+  </section>
+
+  <div class="footer">XXXECUTIVE saves locally on this device. Rename the waves. Build your own roster. Your business, your rules. ✦</div>
+</div>
+
+<dialog id="waveDialog">
+  <form class="modal glass" id="waveForm">
+    <div class="modalHead">
+      <div><div class="eyebrow" id="modalEyebrow">EDIT WAVE</div><h2 id="modalTitle">Tune the frequency</h2></div>
+      <button class="iconbtn" type="button" id="closeModal">×</button>
+    </div>
+    <input type="hidden" id="waveId">
+    <div class="formGrid">
+      <div class="full">
+        <label>Wave name</label>
+        <input class="input" id="waveName" required maxlength="40" placeholder="CAM">
+      </div>
+      <div class="full">
+        <label>Description</label>
+        <textarea id="waveDesc" required maxlength="280" placeholder="What belongs in this business wave?"></textarea>
+      </div>
+      <div>
+        <label>Wave length (days)</label>
+        <input class="input" id="waveDays" type="number" min="1" max="90" value="7">
+      </div>
+      <div>
+        <label>Accent</label>
+        <div class="colorRow"><input class="input" id="waveColorText" placeholder="#ff4f9a"><input type="color" id="waveColor" value="#ff4f9a"></div>
+      </div>
+    </div>
+    <div class="modalActions">
+      <button class="btn danger" type="button" id="deleteWave">Delete wave</button>
+      <div class="rightActions">
+        <button class="btn" type="button" id="cancelModal">Cancel</button>
+        <button class="btn primary" type="submit">Save wave</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const STORE="xxxecutive_v1";
+const legacyIdeas=[
+  {id:crypto.randomUUID(),text:"Plan the next live session and promo window",wave:"cam",type:"Live",done:false},
+  {id:crypto.randomUUID(),text:"Batch one premium content set for the vault",wave:"content",type:"Shoot",done:false}
+];
+const starter={
+  waves:[
+    {id:"cam",name:"CAM",description:"Go live with intention. Plan sessions, themes, goals, room energy, show flow, and the little rituals that make performing feel sustainable instead of chaotic.",days:7,color:"#ff4f9a"},
+    {id:"fan",name:"FAN",description:"Nurture the paying audience. Messages, subscriber care, PPV drops, renewals, customs, retention, and keeping your fan world warm without living in your inbox.",days:7,color:"#ff7bb8"},
+    {id:"content",name:"CONTENT",description:"Make the inventory. Shoots, clips, photo sets, editing, batching, captions, archives, and everything that turns one good creative day into weeks of material.",days:7,color:"#ff315f"},
+    {id:"promo",name:"PROMO",description:"Bring fresh eyes into the ecosystem. Teasers, socials, previews, traffic experiments, collaborations, and promotion that supports the business without swallowing it whole.",days:7,color:"#ff995e"},
+    {id:"booking",name:"BOOKING",description:"Handle professional opportunities. Shoots, collaborations, travel, call times, confirmations, rates, logistics, and the details that keep booked work clean and organized.",days:7,color:"#d79cff"},
+    {id:"admin",name:"ADMIN",description:"Run the boring-important machinery. Payouts, records, taxes, invoices, releases, platform housekeeping, backups, and anything Future You will be grateful you handled.",days:7,color:"#9ebcff"},
+    {id:"safety",name:"SAFETY",description:"Protect the person behind the persona. Privacy checks, boundaries, account security, blocklists, document hygiene, emergency contacts, and anything that keeps work safer.",days:7,color:"#9ef0c3"},
+    {id:"recovery",name:"RECOVERY",description:"Maintain the asset that makes the whole business possible: you. Rest, meals, movement, beauty maintenance, decompression, errands, and true off-duty restoration.",days:7,color:"#ffd1e3"}
+  ],
+  activeIndex:0,
+  waveStarted:new Date().toISOString(),
+  ideas:legacyIdeas
+};
+let state;
+try{state=JSON.parse(localStorage.getItem(STORE))||structuredClone(starter)}catch(e){state=structuredClone(starter)}
+if(!Array.isArray(state.waves)||!state.waves.length) state=structuredClone(starter);
+if(!Array.isArray(state.ideas)) state.ideas=[];
+let filter="all";
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const save=()=>localStorage.setItem(STORE,JSON.stringify(state));
+const waveById=id=>state.waves.find(w=>w.id===id);
+
+function dateRange(){
+  const w=state.waves[state.activeIndex];
+  const start=new Date(state.waveStarted);
+  const end=new Date(start); end.setDate(end.getDate()+Number(w.days||7)-1);
+  const fmt=d=>d.toLocaleDateString(undefined,{month:"short",day:"numeric"});
+  return `${fmt(start)} — ${fmt(end)}`;
+}
+function currentDay(){
+  const start=new Date(state.waveStarted); const now=new Date();
+  return Math.min(Math.max(Math.floor((now-start)/86400000)+1,1),Number(state.waves[state.activeIndex].days||7));
+}
+function renderHero(){
+  const w=state.waves[state.activeIndex];
+  $("currentWaveName").textContent=w.name.toUpperCase()+" WAVE";
+  $("currentWaveDesc").textContent=w.description;
+  const d=currentDay(), days=Number(w.days||7);
+  $("dayText").textContent=`Day ${d} of ${days}`;
+  $("dateText").textContent=dateRange();
+  $("dayFill").style.width=Math.min(100,d/days*100)+"%";
+}
+function renderWaves(){
+  $("waves").innerHTML=state.waves.map((w,i)=>{
+    const count=state.ideas.filter(x=>x.wave===w.id&&!x.done).length;
+    const status=i===state.activeIndex?"IN FOCUS":"UP NEXT";
+    return `<article class="wave glass ${i===state.activeIndex?"active":""}" style="--wave-color:${esc(w.color)}" draggable="true" data-id="${esc(w.id)}">
+      <div class="waveHead">
+        <div><div class="waveNum">WAVE ${String(i+1).padStart(2,"0")}</div><h4>${esc(w.name)}</h4></div>
+        <button class="iconbtn editWave" data-id="${esc(w.id)}" title="Edit wave">✎</button>
+      </div>
+      <div class="waveDesc">${esc(w.description)}</div>
+      <div class="waveMeta"><span class="pill ${i===state.activeIndex?"active":""}">${status}</span><span class="pill">${w.days} DAYS</span><span class="pill">${count} MOVES</span></div>
+    </article>`
+  }).join("");
+  document.querySelectorAll(".editWave").forEach(b=>b.onclick=()=>openWave(b.dataset.id));
+  addDnD();
+}
+function renderSelectors(){
+  $("ideaWave").innerHTML=state.waves.map(w=>`<option value="${esc(w.id)}">${esc(w.name)}</option>`).join("");
+  const old=filter;
+  $("filters").innerHTML=`<button class="chip ${filter==="all"?"on":""}" data-filter="all">All waves</button>
+  <button class="chip ${filter==="current"?"on":""}" data-filter="current">Current wave</button>`+
+  state.waves.map(w=>`<button class="chip ${filter===w.id?"on":""}" data-filter="${esc(w.id)}">${esc(w.name)}</button>`).join("");
+  document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;renderSelectors();renderIdeas()});
+}
+function renderIdeas(){
+  const current=state.waves[state.activeIndex].id;
+  const items=state.ideas.filter(i=>filter==="all"|| (filter==="current"&&i.wave===current) || i.wave===filter);
+  $("ideaList").innerHTML=items.length?items.map(i=>{
+    const w=waveById(i.wave);
+    return `<div class="idea ${i.done?"done":""}">
+      <button class="check ${i.done?"done":""}" data-check="${i.id}">${i.done?"✓":""}</button>
+      <div class="ideaText"><div class="ideaTitle">${esc(i.text)}</div><div class="ideaSub">${esc(i.type)} · ${esc(w?.name||"Unknown wave")}</div></div>
+      <div class="ideaActions"><button class="iconbtn" data-delete="${i.id}" title="Delete">×</button></div>
+    </div>`
+  }).join(""):`<div class="empty">Nothing parked here yet. Add the next move when it hits you. ✦</div>`;
+  document.querySelectorAll("[data-check]").forEach(b=>b.onclick=()=>{const x=state.ideas.find(i=>i.id===b.dataset.check);if(x){x.done=!x.done;save();renderAll()}});
+  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{state.ideas=state.ideas.filter(i=>i.id!==b.dataset.delete);save();renderAll()});
+}
+function renderAll(){renderHero();renderWaves();renderSelectors();renderIdeas()}
+
+function openWave(id=null){
+  const w=id?waveById(id):null;
+  $("waveId").value=w?.id||"";
+  $("waveName").value=w?.name||"";
+  $("waveDesc").value=w?.description||"";
+  $("waveDays").value=w?.days||7;
+  $("waveColor").value=w?.color||"#ff4f9a";
+  $("waveColorText").value=w?.color||"#ff4f9a";
+  $("deleteWave").style.visibility=w?"visible":"hidden";
+  $("modalEyebrow").textContent=w?"EDIT WAVE":"NEW WAVE";
+  $("modalTitle").textContent=w?"Edit this business wave":"Add a new business lane";
+  $("waveDialog").showModal();
+}
+$("waveColor").oninput=e=>$("waveColorText").value=e.target.value;
+$("waveColorText").oninput=e=>{if(/^#[0-9a-f]{6}$/i.test(e.target.value))$("waveColor").value=e.target.value};
+
+$("waveForm").onsubmit=e=>{
+  e.preventDefault();
+  const id=$("waveId").value;
+  const data={
+    name:$("waveName").value.trim(),
+    description:$("waveDesc").value.trim(),
+    days:Math.max(1,Number($("waveDays").value||7)),
+    color:/^#[0-9a-f]{6}$/i.test($("waveColorText").value)?$("waveColorText").value:$("waveColor").value
+  };
+  if(id){Object.assign(waveById(id),data)}
+  else{
+    state.waves.push({id:"wave_"+crypto.randomUUID(),...data});
+  }
+  save();$("waveDialog").close();renderAll();
+};
+$("deleteWave").onclick=()=>{
+  const id=$("waveId").value;
+  if(!id||state.waves.length<=1) return alert("XXXECUTIVE needs at least one wave.");
+  const idx=state.waves.findIndex(w=>w.id===id);
+  const replacement=state.waves.find(w=>w.id!==id);
+  state.ideas.forEach(i=>{if(i.wave===id)i.wave=replacement.id});
+  state.waves=state.waves.filter(w=>w.id!==id);
+  if(state.activeIndex>=state.waves.length)state.activeIndex=0;
+  else if(idx<state.activeIndex)state.activeIndex--;
+  save();$("waveDialog").close();renderAll();
+};
+$("addWave").onclick=()=>openWave();
+$("tuneCurrent").onclick=()=>openWave(state.waves[state.activeIndex].id);
+$("closeModal").onclick=$("cancelModal").onclick=()=>$("waveDialog").close();
+
+$("completeWave").onclick=()=>{
+  state.activeIndex=(state.activeIndex+1)%state.waves.length;
+  state.waveStarted=new Date().toISOString();
+  save();renderAll();
+};
+$("addIdea").onclick=()=>{
+  const text=$("ideaText").value.trim(); if(!text)return;
+  state.ideas.unshift({id:crypto.randomUUID(),text,wave:$("ideaWave").value,type:$("ideaType").value,done:false});
+  $("ideaText").value="";save();renderAll();
+};
+$("ideaText").addEventListener("keydown",e=>{if(e.key==="Enter")$("addIdea").click()});
+
+let dragged=null;
+function addDnD(){
+  document.querySelectorAll(".wave").forEach(card=>{
+    card.addEventListener("dragstart",()=>{dragged=card.dataset.id;card.style.opacity=".5"});
+    card.addEventListener("dragend",()=>{dragged=null;card.style.opacity=""});
+    card.addEventListener("dragover",e=>e.preventDefault());
+    card.addEventListener("drop",e=>{
+      e.preventDefault();
+      const target=card.dataset.id;if(!dragged||dragged===target)return;
+      const activeId=state.waves[state.activeIndex].id;
+      const from=state.waves.findIndex(w=>w.id===dragged),to=state.waves.findIndex(w=>w.id===target);
+      const [m]=state.waves.splice(from,1);state.waves.splice(to,0,m);
+      state.activeIndex=state.waves.findIndex(w=>w.id===activeId);
+      save();renderAll();
+    });
+  });
+}
+renderAll();
+</script>
+<script>
+(() => {
+ const button=document.getElementById('updateButton');
+ const status=document.getElementById('updateStatus');
+ if(!window.xxxUpdates){status.textContent='Updater unavailable in browser preview.';button.disabled=true;return;}
+ let available=false, downloading=false;
+ function setMessage(message){status.textContent=message;}
+ window.xxxUpdates.onStatus(data=>{
+   if(data.kind==='available'){available=true;button.textContent='↓ DOWNLOAD UPDATE';}
+   if(data.kind==='current'){available=false;button.textContent='↻ UPDATE';}
+   if(data.kind==='progress'){
+     const percent=data.total?Math.round(data.received/data.total*100):null;
+     setMessage('Downloading update'+(percent===null?'…':' · '+percent+'%'));
+     return;
+   }
+   setMessage(data.message);
+ });
+ button.addEventListener('click',async()=>{
+   if(downloading)return;
+   button.disabled=true;
+   try{
+     if(available){
+       downloading=true;
+       await window.xxxUpdates.download();
+     }else{
+       setMessage('Checking for updates…');
+       const result=await window.xxxUpdates.check();
+       if(result.status==='available'){available=true;button.textContent='↓ DOWNLOAD UPDATE';}
+       else if(result.status==='current'){available=false;setMessage('You are up to date · v'+result.current);}
+       else setMessage('Update check failed: '+result.message);
+     }
+   }finally{downloading=false;button.disabled=false;}
+ });
+})();
+</script>
+</body>
+</html>
